@@ -8,4 +8,9 @@ router.get("/list", async (req, res) => {
   res.json(patients);
 });
 
+router.post("/create", async (req, res) => {
+  const newPatient = await Patient.create(req.body);
+  res.json(newPatient);
+});
+
 module.exports = router;
