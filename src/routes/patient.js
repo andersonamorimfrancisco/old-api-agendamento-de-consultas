@@ -13,4 +13,10 @@ router.post("/create", async (req, res) => {
   res.json(newPatient);
 });
 
+router.post("/edit", async (req, res) => {
+  const newPatient = await Patient.findByIdAndUpdate(req.body._id, req.body);
+  const patient = await Patient.findById(req.body._id);
+  res.json(patient);
+});
+
 module.exports = router;
