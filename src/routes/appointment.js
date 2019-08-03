@@ -4,7 +4,9 @@ const Appointment = require("../models/Appointment");
 const router = express.Router();
 
 router.get("/list", async (req, res) => {
-  const Appointments = await Appointment.find({}).populate("patient");
+  const Appointments = await Appointment.find({})
+    .populate("patient")
+    .populate("fixedPatient");
   res.json(Appointments);
 });
 
@@ -22,6 +24,19 @@ router.post("/insertpatient", async (req, res) => {
   });
   const appointment = await Appointment.findById(req.body.appointmentId).populate("patient");
   res.json(appointment);
+});
+
+router.post("/insertfixedpatient", async (req, res) => {
+  await Appointment.updateMany(
+    {
+      hour: req.body.hour,
+      weekday: req.body.weekday,
+      week: { $gt: req.body.week }
+    },
+    { $set: { patient: req.body.patient._id, fixedPatient: req.body.patient._id } }
+  );
+
+  res.json({ success: true });
 });
 
 module.exports = router;
