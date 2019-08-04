@@ -31,9 +31,32 @@ router.post("/insertfixedpatient", async (req, res) => {
     {
       hour: req.body.hour,
       weekday: req.body.weekday,
-      week: { $gt: req.body.week }
+      week: { $gte: req.body.week }
     },
     { $set: { patient: req.body.patient._id, fixedPatient: req.body.patient._id } }
+  );
+
+  res.json({ success: true });
+});
+
+router.post("/removefixedpatient", async (req, res) => {
+  await Appointment.updateMany(
+    {
+      hour: req.body.hour,
+      weekday: req.body.weekday,
+      patient: req.body.patient._id,
+      week: { $gte: req.body.week }
+    },
+    { $set: { patient: null } }
+  );
+
+  await Appointment.updateMany(
+    {
+      hour: req.body.hour,
+      weekday: req.body.weekday,
+      fixedPatient: req.body.fixedPatient._id
+    },
+    { $set: { fixedPatient: null } }
   );
 
   res.json({ success: true });
