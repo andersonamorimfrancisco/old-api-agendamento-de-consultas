@@ -3,8 +3,10 @@ const Appointment = require("../models/Appointment");
 
 const router = express.Router();
 
-router.get("/list", async (req, res) => {
-  const Appointments = await Appointment.find({})
+router.get("/list/:initialTime/:finalTime", async (req, res) => {
+  const Appointments = await Appointment.find({
+    hour: { $gte: req.params.initialTime, $lte: req.params.finalTime }
+  })
     .populate("patient")
     .populate("fixedPatient");
   res.json(Appointments);
